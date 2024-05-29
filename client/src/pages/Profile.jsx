@@ -30,7 +30,7 @@ function Profile() {
   const getUser = async () => {
     try {
       dispatch(setLoading(true));
-      const temp = await fetchData(`/user/getuser/${userId}`);
+      const temp = await fetchData(`http://localhost:5000/api/user/getuser/${userId}`);
       setFormDetails({
         ...temp,
         password: "",

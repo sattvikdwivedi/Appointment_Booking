@@ -68,11 +68,11 @@ const Footer = () => {
         <div className="footer-bottom">
           Made by{" "}
           <a
-            href="https://www.linkedin.com/in/dunna-avinash"
+            href="https://www.linkedin.com/in/sattvik-dwivedi-277544207/"
             target="_blank"
             rel="noreferrer"
           >
-            Avinash
+            sattvik
           </a>{" "}
           © {new Date().getFullYear()}
         </div>

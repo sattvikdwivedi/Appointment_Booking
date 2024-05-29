@@ -17,7 +17,7 @@ const Notifications = () => {
   const getAllNotif = async (e) => {
     try {
       dispatch(setLoading(true));
-      const temp = await fetchData(`/notification/getallnotifs`);
+      const temp = await fetchData(`http://localhost:5000/api/notification/getallnotifs`);
       dispatch(setLoading(false));
       setNotifications(temp);
     } catch (error) {}

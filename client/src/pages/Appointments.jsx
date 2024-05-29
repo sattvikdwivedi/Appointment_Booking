@@ -21,7 +21,7 @@ const Appointments = () => {
     try {
       dispatch(setLoading(true));
       const temp = await fetchData(
-        `/appointment/getallappointments?search=${userId}`
+        `http://localhost:5000/api/appointment/getallappointments?search=${userId}`
       );
       setAppointments(temp);
       dispatch(setLoading(false));

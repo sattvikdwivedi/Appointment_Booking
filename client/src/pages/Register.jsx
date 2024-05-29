@@ -47,11 +47,12 @@ function Register() {
   };
 
   const formSubmit = async (e) => {
+
     try {
       e.preventDefault();
 
       if (loading) return;
-      if (file === "") return;
+      // if (file === "") return;
 
       const { firstname, lastname, email, password, confpassword } =
         formDetails;
@@ -68,12 +69,16 @@ function Register() {
       }
 
       await toast.promise(
-        axios.post("/user/register", {
+        axios.post("http://localhost:5000/api/user/register", {
           firstname,
           lastname,
           email,
           password,
           pic: file,
+        },{
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }),
         {
           pending: "Registering user...",
@@ -83,7 +88,9 @@ function Register() {
         }
       );
       return navigate("/login");
-    } catch (error) {}
+    } catch (error) {
+      console.log("register error: ", error);
+    }
   };
 
   return (
