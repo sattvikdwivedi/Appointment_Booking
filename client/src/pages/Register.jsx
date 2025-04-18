@@ -32,66 +32,109 @@ function Register() {
       const data = new FormData();
       data.append("file", element);
       data.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET);
-      data.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
-      fetch(process.env.REACT_APP_CLOUDINARY_BASE_URL, {
-        method: "POST",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data) => setFile(data.url.toString()));
+  
+      try {
+        const response = await fetch(process.env.REACT_APP_CLOUDINARY_BASE_URL, {
+          method: "POST",
+          body: data,
+        });
+  
+        const result = await response.json();
+  
+        if (result.secure_url) {
+          setFile(result.secure_url);
+        } else {
+          toast.error("Upload failed. Check preset or file format.");
+          console.error("Cloudinary response:", result);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+        toast.error("Something went wrong during upload.");
+      }
+  
       setLoading(false);
     } else {
       setLoading(false);
       toast.error("Please select an image in jpeg or png format");
     }
   };
+  
 
   const formSubmit = async (e) => {
-
+    e.preventDefault();
+  
     try {
-      e.preventDefault();
-
       if (loading) return;
-      // if (file === "") return;
-
-      const { firstname, lastname, email, password, confpassword } =
-        formDetails;
-      if (!firstname || !lastname || !email || !password || !confpassword) {
-        return toast.error("Input field should not be empty");
-      } else if (firstname.length < 3) {
-        return toast.error("First name must be at least 3 characters long");
-      } else if (lastname.length < 3) {
-        return toast.error("Last name must be at least 3 characters long");
-      } else if (password.length < 5) {
-        return toast.error("Password must be at least 5 characters long");
-      } else if (password !== confpassword) {
-        return toast.error("Passwords do not match");
+  
+      const { firstname, lastname, email, password, confpassword } = formDetails;
+  
+      // Trimmed inputs
+      const trimmedFirstName = firstname.trim();
+      const trimmedLastName = lastname.trim();
+      const trimmedEmail = email.trim();
+      const trimmedPassword = password.trim();
+      const trimmedConfPassword = confpassword.trim();
+  
+      // Validation
+      if (!trimmedFirstName || !trimmedLastName || !trimmedEmail || !trimmedPassword || !trimmedConfPassword) {
+        return toast.error("All fields are required and should not be blank spaces.");
       }
-
+  
+      if (trimmedFirstName.length < 3) {
+        return toast.error("First name must be at least 3 characters long.");
+      }
+  
+      if (trimmedLastName.length < 3) {
+        return toast.error("Last name must be at least 3 characters long.");
+      }
+  
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmedEmail)) {
+        return toast.error("Please enter a valid email address.");
+      }
+  
+      if (trimmedPassword.length < 5) {
+        return toast.error("Password must be at least 5 characters long.");
+      }
+  
+      if (trimmedPassword !== trimmedConfPassword) {
+        return toast.error("Passwords do not match.");
+      }
+  
+      if (!file) {
+        return toast.error("Please upload a profile picture.");
+      }
+  
       await toast.promise(
-        axios.post("http://localhost:5000/api/user/register", {
-          firstname,
-          lastname,
-          email,
-          password,
-          pic: file,
-        },{
-          headers: {
-            'Content-Type': 'application/json'
+        axios.post(
+          "http://localhost:5000/api/user/register",
+          {
+            firstname: trimmedFirstName,
+            lastname: trimmedLastName,
+            email: trimmedEmail,
+            password: trimmedPassword,
+            pic: file,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        }),
+        ),
         {
           pending: "Registering user...",
           success: "User registered successfully",
           error: "Unable to register user",
-          loading: "Registering user...",
         }
       );
-      return navigate("/login");
+  
+      navigate("/login");
     } catch (error) {
-      console.log("register error: ", error);
+      console.error("Register error:", error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
+  
 
   return (
     <section className="register-section flex-center">

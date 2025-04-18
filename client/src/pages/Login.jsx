@@ -51,6 +51,7 @@ function Login() {
       localStorage.setItem("token", data.token);
       dispatch(setUserInfo(jwt_decode(data.token).userId));
       getUser(jwt_decode(data.token).userId);
+      navigate("/");
     } catch (error) {
       return error;
     }
