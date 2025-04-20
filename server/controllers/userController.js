@@ -1,8 +1,8 @@
-const User = require("../server/models/userModel");
+const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const Doctor = require("../server/models/doctorModel");
-const Appointment = require("../server/models/appointmentModel");
+const Doctor = require("../models/doctorModel");
+const Appointment = require("../models/appointmentModel");
 
 const getuser = async (req, res) => {
   try {
