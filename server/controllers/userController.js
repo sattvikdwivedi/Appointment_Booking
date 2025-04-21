@@ -109,6 +109,40 @@ const deleteuser = async (req, res) => {
   }
 };
 
+const googleLogin=async (req, res) => {
+  const { email, name, picture, googleId } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        firstname: name.split(" ")[0],
+        lastname: name.split(" ")[1] || "",
+        email,
+        pic: picture,
+        password: googleId, // or hash something if needed
+        googleId,
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Google login failed");
+  }
+}
+
 module.exports = {
   getuser,
   getallusers,
@@ -116,4 +150,5 @@ module.exports = {
   register,
   updateprofile,
   deleteuser,
+  googleLogin
 };

@@ -15,4 +15,7 @@ userRouter.put("/updateprofile", auth, userController.updateprofile);
 
 userRouter.delete("/deleteuser", auth, userController.deleteuser);
 
+userRouter.post('/google-login',userController.googleLogin)
+
+
 module.exports = userRouter;

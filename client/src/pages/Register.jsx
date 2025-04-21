@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/register.css";
 import axios from "axios";
 import toast from "react-hot-toast";
+import GoogleloginAuth from "../components/GoogleloginAuth";
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_DOMAIN;
 
@@ -140,10 +141,8 @@ function Register() {
     <section className="register-section flex-center">
       <div className="register-container flex-center">
         <h2 className="form-heading">Sign Up</h2>
-        <form
-          onSubmit={formSubmit}
-          className="register-form"
-        >
+  
+        <form onSubmit={formSubmit} className="register-form">
           <input
             type="text"
             name="firstname"
@@ -194,23 +193,27 @@ function Register() {
           <button
             type="submit"
             className="btn form-btn"
-            disabled={loading ? true : false}
+            disabled={loading}
           >
-            sign up
+            {loading ? "Uploading..." : "Sign Up"}
           </button>
         </form>
-        <p>
+  
+        <p className="login-text">
           Already a user?{" "}
-          <NavLink
-            className="login-link"
-            to={"/login"}
-          >
+          <NavLink className="login-link" to="/login">
             Log in
           </NavLink>
         </p>
+
+  
+        <div className="google-login-wrapper">
+          <GoogleloginAuth />
+        </div>
       </div>
     </section>
   );
+  
 }
 
 export default Register;
